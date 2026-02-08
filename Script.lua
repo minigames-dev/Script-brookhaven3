@@ -17,7 +17,14 @@ local function temItem(n)
 	if Player.Character and Player.Character:FindFirstChild(n) then return false end
 	return false
 end
-
+-- MENSAGEM AO EXECUTAR O SCRIPT
+pcall(function()
+	game.StarterGui:SetCore("SendNotification", {
+		Title = "DAVIZINSCRIPTS",
+		Text = "key: admin2025",
+		Duration = 10
+	})
+end)
 --------------------------------------------------------------------
 --  SOM DE CLIQUE
 --------------------------------------------------------------------
