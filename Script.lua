@@ -147,7 +147,7 @@ local abaPegar   = criarAba("RGB NAME",2,totalAbas)
 local abaAceitar = criarAba("Troll",3,totalAbas)
 local abaEquip   = criarAba("AUTO EQUIP",4,totalAbas)
 local abaPlayers = criarAba("PLAYERS",5,totalAbas)
-local abaTP      = criarAba("TELEPORT",6,totalAbas)
+local abaTP      = criarAba("Credits",6,totalAbas)
 
 --------------------------------------------------------------------
 -- SISTEMA DE PÁGINAS
@@ -700,67 +700,30 @@ Players.PlayerAdded:Connect(atualizarLista)
 Players.PlayerRemoving:Connect(atualizarLista)
 
 --------------------------------------------------------------------
--- TELEPORT
+-- Credits
 --------------------------------------------------------------------
+local creditsFrame = Instance.new("Frame", pagTP)
+creditsFrame.Size = UDim2.new(1,0,1,0)
+creditsFrame.BackgroundTransparency = 1
 
-local bTP = Instance.new("TextButton", pagTP)
-bTP.Size = UDim2.new(0,200,0,50)
-bTP.Position = UDim2.new(0,20,0,20)
-bTP.BackgroundColor3 = Color3.fromRGB(150,150,50)
-bTP.Text = "TELEPORTAR ATÉ O PLAYER"
-bTP.TextColor3 = Color3.new(1,1,1)
-bTP.Font = Enum.Font.GothamBold
-bTP.TextScaled = true
-addClickSound(bTP)
+local creditsTitle = Instance.new("TextLabel", creditsFrame)
+creditsTitle.Size = UDim2.new(1,0,0,60)
+creditsTitle.Position = UDim2.new(0,0,0,30)
+creditsTitle.BackgroundTransparency = 1
+creditsTitle.Text = "DAVIZINSCRIPTS PRO MAX V6"
+creditsTitle.Font = Enum.Font.GothamBold
+creditsTitle.TextScaled = true
+creditsTitle.TextColor3 = Color3.fromRGB(0,170,255)
 
-bTP.MouseButton1Click:Connect(function()
-	if jogadorSelecionado and jogadorSelecionado.Character
-		and jogadorSelecionado.Character:FindFirstChild("HumanoidRootPart") then
-		Player.Character:MoveTo(jogadorSelecionado.Character.HumanoidRootPart.Position)
-	end
-end)
-
---------------------------------------------------------------------
--- AUTO BAN CASA
---------------------------------------------------------------------
-
-local botaoAutoBan = Instance.new("TextButton", pagTP)
-botaoAutoBan.Size = UDim2.new(0,300,0,45)
-botaoAutoBan.Position = UDim2.new(0,20,0,90)
-botaoAutoBan.BackgroundColor3 = Color3.fromRGB(180,40,40)
-botaoAutoBan.Text = "LIGAR AUTO BAN NA MINHA CASA"
-botaoAutoBan.TextColor3 = Color3.new(1,1,1)
-botaoAutoBan.Font = Enum.Font.GothamBold
-botaoAutoBan.TextScaled = true
-addClickSound(botaoAutoBan)
-
-local autoBanAtivo = false
-botaoAutoBan.MouseButton1Click:Connect(function()
-	autoBanAtivo = not autoBanAtivo
-	botaoAutoBan.Text = autoBanAtivo and "AUTO BAN ATIVO" or "LIGAR AUTO BAN NA MINHA CASA"
-end)
-
-task.spawn(function()
-	while true do
-		if autoBanAtivo then
-			for _, plr in ipairs(Players:GetPlayers()) do
-				if plr ~= Player then
-					local char = plr.Character
-					if char and char:FindFirstChild("HumanoidRootPart") then
-						local pos = char.HumanoidRootPart.Position
-						local casa = workspace:WaitForChild("001_Lots"):WaitForChild("Itachi_uchihaaq7House")
-						local distancia = (pos - casa.HousePickedByPlayer.HouseModel.PrimaryPart.Position).Magnitude
-						if distancia < 50 then
-							local args = { plr }
-							casa.HousePickedByPlayer.HouseModel["Permissions:Disallow"]:FireServer(unpack(args))
-						end
-					end
-				end
-			end
-		end
-		task.wait(1)
-	end
-end)
+local creditsText = Instance.new("TextLabel", creditsFrame)
+creditsText.Size = UDim2.new(1,-40,0,200)
+creditsText.Position = UDim2.new(0,20,0,120)
+creditsText.BackgroundTransparency = 1
+creditsText.TextWrapped = true
+creditsText.TextScaled = true
+creditsText.Font = Enum.Font.Gotham
+creditsText.TextColor3 = Color3.new(1,1,1)
+creditsText.Text = "Criado por: DAVIZINSCRIPTS\n\nTikTok: @davizinscriptsofc\n\nEsse script foi feito 100% sozinho por mim.\nSem ajuda de ninguém."
 
 --------------------------------------------------------------------
 -- EVENTOS DAS ABAS
