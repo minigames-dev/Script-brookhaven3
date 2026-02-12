@@ -42,48 +42,114 @@ local function addClickSound(btn)
 end
 
 --------------------------------------------------------------------
--- LOGIN
+-- LOGIN PREMIUM
 --------------------------------------------------------------------
 
-local loginGui = Instance.new("ScreenGui", Player.PlayerGui)
-loginGui.Name = "loginDavizin"
+local TweenService = game:GetService("TweenService")
 
+local loginGui = Instance.new("ScreenGui")
+loginGui.Name = "loginDavizin"
+loginGui.Parent = Player.PlayerGui
+loginGui.ResetOnSpawn = false
+
+-- FUNDO ESCURO
+local blurFrame = Instance.new("Frame", loginGui)
+blurFrame.Size = UDim2.new(1,0,1,0)
+blurFrame.BackgroundColor3 = Color3.fromRGB(0,0,0)
+blurFrame.BackgroundTransparency = 0.4
+
+-- FRAME PRINCIPAL
 local loginFrame = Instance.new("Frame", loginGui)
-loginFrame.Size = UDim2.new(0,300,0,200)
-loginFrame.Position = UDim2.new(0.5,-150,0.4,-100)
+loginFrame.Size = UDim2.new(0,0,0,0)
+loginFrame.Position = UDim2.new(0.5,0,0.5,0)
+loginFrame.AnchorPoint = Vector2.new(0.5,0.5)
+loginFrame.BackgroundColor3 = Color3.fromRGB(20,20,25)
+loginFrame.BorderSizePixel = 0
 loginFrame.Active = true
 loginFrame.Draggable = true
-loginFrame.BorderSizePixel = 0
-loginFrame.AnchorPoint = Vector2.new(0.5,0.5)
-loginFrame.BackgroundColor3 = Color3.fromRGB(25,25,25)
+
+local corner = Instance.new("UICorner", loginFrame)
+corner.CornerRadius = UDim.new(0,20)
+
+local stroke = Instance.new("UIStroke", loginFrame)
+stroke.Color = Color3.fromRGB(0,170,255)
+stroke.Thickness = 2
+
+local gradient = Instance.new("UIGradient", loginFrame)
+gradient.Color = ColorSequence.new{
+	ColorSequenceKeypoint.new(0, Color3.fromRGB(25,25,40)),
+	ColorSequenceKeypoint.new(1, Color3.fromRGB(15,15,25))
+}
+
+-- ANIMAÇÃO DE ABERTURA
+TweenService:Create(loginFrame, TweenInfo.new(0.4, Enum.EasingStyle.Back), {
+	Size = UDim2.new(0,340,0,220)
+}):Play()
+
+--------------------------------------------------------------------
+-- TITULO
+--------------------------------------------------------------------
 
 local loginTitulo = Instance.new("TextLabel", loginFrame)
-loginTitulo.Size = UDim2.new(1,0,0,40)
-loginTitulo.BackgroundColor3 = Color3.fromRGB(40,40,40)
-loginTitulo.Text = "davizinscripts - Login"
-loginTitulo.Font = Enum.Font.GothamBold
+loginTitulo.Size = UDim2.new(1,0,0,50)
+loginTitulo.BackgroundTransparency = 1
+loginTitulo.Text = "🔐 DAVIZINSCRIPTS"
+loginTitulo.Font = Enum.Font.GothamBlack
 loginTitulo.TextScaled = true
-loginTitulo.TextColor3 = Color3.new(1,1,1)
+loginTitulo.TextColor3 = Color3.fromRGB(0,170,255)
+
+--------------------------------------------------------------------
+-- CAIXA SENHA
+--------------------------------------------------------------------
 
 local senhaBox = Instance.new("TextBox", loginFrame)
-senhaBox.Size = UDim2.new(1,-20,0,40)
-senhaBox.Position = UDim2.new(0,10,0,70)
-senhaBox.PlaceholderText = "Digite a senha"
+senhaBox.Size = UDim2.new(0.85,0,0,45)
+senhaBox.Position = UDim2.new(0.075,0,0,70)
+senhaBox.PlaceholderText = "Digite sua key..."
 senhaBox.Text = ""
 senhaBox.Font = Enum.Font.GothamBold
 senhaBox.TextScaled = true
 senhaBox.TextColor3 = Color3.new(1,1,1)
-senhaBox.BackgroundColor3 = Color3.fromRGB(55,55,55)
+senhaBox.BackgroundColor3 = Color3.fromRGB(35,35,45)
+senhaBox.BorderSizePixel = 0
+senhaBox.ClearTextOnFocus = false
+
+local boxCorner = Instance.new("UICorner", senhaBox)
+boxCorner.CornerRadius = UDim.new(0,12)
+
+local boxStroke = Instance.new("UIStroke", senhaBox)
+boxStroke.Color = Color3.fromRGB(0,170,255)
+boxStroke.Thickness = 1.5
+
+--------------------------------------------------------------------
+-- BOTÃO LOGIN
+--------------------------------------------------------------------
 
 local botaoLogin = Instance.new("TextButton", loginFrame)
-botaoLogin.Size = UDim2.new(1,-20,0,40)
-botaoLogin.Position = UDim2.new(0,10,0,130)
-botaoLogin.BackgroundColor3 = Color3.fromRGB(70,70,70)
+botaoLogin.Size = UDim2.new(0.85,0,0,45)
+botaoLogin.Position = UDim2.new(0.075,0,0,135)
 botaoLogin.Text = "ENTRAR"
-botaoLogin.TextColor3 = Color3.new(1,1,1)
-botaoLogin.Font = Enum.Font.GothamBold
+botaoLogin.Font = Enum.Font.GothamBlack
 botaoLogin.TextScaled = true
-addClickSound(botaoLogin)
+botaoLogin.TextColor3 = Color3.new(1,1,1)
+botaoLogin.BackgroundColor3 = Color3.fromRGB(0,170,255)
+botaoLogin.BorderSizePixel = 0
+
+local btnCorner = Instance.new("UICorner", botaoLogin)
+btnCorner.CornerRadius = UDim.new(0,12)
+
+-- EFEITO HOVER
+botaoLogin.MouseEnter:Connect(function()
+	TweenService:Create(botaoLogin, TweenInfo.new(0.2), {
+		BackgroundColor3 = Color3.fromRGB(0,200,255)
+	}):Play()
+end)
+
+botaoLogin.MouseLeave:Connect(function()
+	TweenService:Create(botaoLogin, TweenInfo.new(0.2), {
+		BackgroundColor3 = Color3.fromRGB(0,170,255)
+	}):Play()
+end)
 
 --------------------------------------------------------------------
 -- GUI PRINCIPAL
