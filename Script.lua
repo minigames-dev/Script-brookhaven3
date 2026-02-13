@@ -35,35 +35,92 @@ local function addClickSound(btn)
 end
 
 --------------------------------------------------------------------
--- BOTÕES GET KEY + ENTRAR
+-- LOGIN PREMIUM
 --------------------------------------------------------------------
 
 local TweenService = game:GetService("TweenService")
 
--- ===== BOTÃO GET KEY =====
-local getKeyButton = Instance.new("TextButton")
-getKeyButton.Parent = loginFrame
-getKeyButton.Size = UDim2.new(0.4,0,0,45)
-getKeyButton.Position = UDim2.new(0.075,0,0,135)
-getKeyButton.Text = "🔑 GET KEY"
-getKeyButton.Font = Enum.Font.GothamBlack
-getKeyButton.TextScaled = true
-getKeyButton.TextColor3 = Color3.new(1,1,1)
-getKeyButton.BackgroundColor3 = Color3.fromRGB(170,0,255)
-getKeyButton.BorderSizePixel = 0
+local loginGui = Instance.new("ScreenGui")
+loginGui.Name = "loginDavizin"
+loginGui.Parent = Player.PlayerGui
+loginGui.ResetOnSpawn = false
 
-local getCorner = Instance.new("UICorner", getKeyButton)
-getCorner.CornerRadius = UDim.new(0,12)
+-- FUNDO ESCURO
+local blurFrame = Instance.new("Frame", loginGui)
+blurFrame.Size = UDim2.new(1,0,1,0)
+blurFrame.BackgroundColor3 = Color3.fromRGB(0,0,0)
+blurFrame.BackgroundTransparency = 0.4
 
-local getStroke = Instance.new("UIStroke", getKeyButton)
-getStroke.Color = Color3.fromRGB(200,0,255)
-getStroke.Thickness = 1.5
+-- FRAME PRINCIPAL
+local loginFrame = Instance.new("Frame", loginGui)
+loginFrame.Size = UDim2.new(0,0,0,0)
+loginFrame.Position = UDim2.new(0.5,0,0.5,0)
+loginFrame.AnchorPoint = Vector2.new(0.5,0.5)
+loginFrame.BackgroundColor3 = Color3.fromRGB(20,20,25)
+loginFrame.BorderSizePixel = 0
+loginFrame.Active = true
+loginFrame.Draggable = true
 
--- ===== BOTÃO ENTRAR =====
-local botaoLogin = Instance.new("TextButton")
-botaoLogin.Parent = loginFrame
-botaoLogin.Size = UDim2.new(0.4,0,0,45)
-botaoLogin.Position = UDim2.new(0.525,0,0,135)
+local corner = Instance.new("UICorner", loginFrame)
+corner.CornerRadius = UDim.new(0,20)
+
+local stroke = Instance.new("UIStroke", loginFrame)
+stroke.Color = Color3.fromRGB(0,170,255)
+stroke.Thickness = 2
+
+local gradient = Instance.new("UIGradient", loginFrame)
+gradient.Color = ColorSequence.new{
+	ColorSequenceKeypoint.new(0, Color3.fromRGB(25,25,40)),
+	ColorSequenceKeypoint.new(1, Color3.fromRGB(15,15,25))
+}
+
+-- ANIMAÇÃO DE ABERTURA
+TweenService:Create(loginFrame, TweenInfo.new(0.4, Enum.EasingStyle.Back), {
+	Size = UDim2.new(0,340,0,220)
+}):Play()
+
+--------------------------------------------------------------------
+-- TITULO
+--------------------------------------------------------------------
+
+local loginTitulo = Instance.new("TextLabel", loginFrame)
+loginTitulo.Size = UDim2.new(1,0,0,50)
+loginTitulo.BackgroundTransparency = 1
+loginTitulo.Text = "🔐 DAVIZINSCRIPTS"
+loginTitulo.Font = Enum.Font.GothamBlack
+loginTitulo.TextScaled = true
+loginTitulo.TextColor3 = Color3.fromRGB(0,170,255)
+
+--------------------------------------------------------------------
+-- CAIXA SENHA
+--------------------------------------------------------------------
+
+local senhaBox = Instance.new("TextBox", loginFrame)
+senhaBox.Size = UDim2.new(0.85,0,0,45)
+senhaBox.Position = UDim2.new(0.075,0,0,70)
+senhaBox.PlaceholderText = "Digite sua key..."
+senhaBox.Text = ""
+senhaBox.Font = Enum.Font.GothamBold
+senhaBox.TextScaled = true
+senhaBox.TextColor3 = Color3.new(1,1,1)
+senhaBox.BackgroundColor3 = Color3.fromRGB(35,35,45)
+senhaBox.BorderSizePixel = 0
+senhaBox.ClearTextOnFocus = false
+
+local boxCorner = Instance.new("UICorner", senhaBox)
+boxCorner.CornerRadius = UDim.new(0,12)
+
+local boxStroke = Instance.new("UIStroke", senhaBox)
+boxStroke.Color = Color3.fromRGB(0,170,255)
+boxStroke.Thickness = 1.5
+
+--------------------------------------------------------------------
+-- BOTÃO LOGIN
+--------------------------------------------------------------------
+
+local botaoLogin = Instance.new("TextButton", loginFrame)
+botaoLogin.Size = UDim2.new(0.85,0,0,45)
+botaoLogin.Position = UDim2.new(0.075,0,0,135)
 botaoLogin.Text = "ENTRAR"
 botaoLogin.Font = Enum.Font.GothamBlack
 botaoLogin.TextScaled = true
@@ -71,51 +128,49 @@ botaoLogin.TextColor3 = Color3.new(1,1,1)
 botaoLogin.BackgroundColor3 = Color3.fromRGB(0,170,255)
 botaoLogin.BorderSizePixel = 0
 
-local loginCorner = Instance.new("UICorner", botaoLogin)
-loginCorner.CornerRadius = UDim.new(0,12)
+local btnCorner = Instance.new("UICorner", botaoLogin)
+btnCorner.CornerRadius = UDim.new(0,12)
 
-local loginStroke = Instance.new("UIStroke", botaoLogin)
-loginStroke.Color = Color3.fromRGB(0,200,255)
-loginStroke.Thickness = 1.5
+-- EFEITO HOVER
+botaoLogin.MouseEnter:Connect(function()
+	TweenService:Create(botaoLogin, TweenInfo.new(0.2), {
+		BackgroundColor3 = Color3.fromRGB(0,200,255)
+	}):Play()
+end)
+
+botaoLogin.MouseLeave:Connect(function()
+	TweenService:Create(botaoLogin, TweenInfo.new(0.2), {
+		BackgroundColor3 = Color3.fromRGB(0,170,255)
+	}):Play()
+end)
 
 --------------------------------------------------------------------
--- FUNÇÃO GET KEY (COPIAR LINK)
+-- BOTÃO PEQUENO GET KEY
 --------------------------------------------------------------------
+
+local getKeyButton = Instance.new("TextButton", loginFrame)
+getKeyButton.Size = UDim2.new(0,90,0,30)
+getKeyButton.Position = UDim2.new(1,-100,0,10)
+getKeyButton.Text = "GET KEY"
+getKeyButton.Font = Enum.Font.GothamBold
+getKeyButton.TextScaled = true
+getKeyButton.TextColor3 = Color3.new(1,1,1)
+getKeyButton.BackgroundColor3 = Color3.fromRGB(170,0,255)
+getKeyButton.BorderSizePixel = 0
+
+local corner2 = Instance.new("UICorner", getKeyButton)
+corner2.CornerRadius = UDim.new(0,8)
 
 local keyLink = "https://link-hub.net/2596256/Wth3aFzRTgwh"
 
 getKeyButton.MouseButton1Click:Connect(function()
-
 	if setclipboard then
 		setclipboard(keyLink)
 	end
-
-	getKeyButton.Text = "✅ COPIADO!"
-
+	
+	getKeyButton.Text = "COPIADO!"
 	task.wait(1.5)
-
-	getKeyButton.Text = "🔑 GET KEY"
-end)
-
---------------------------------------------------------------------
--- FUNÇÃO LOGIN
---------------------------------------------------------------------
-
-botaoLogin.MouseButton1Click:Connect(function()
-
-	if senhaBox.Text == "admin2025" then
-		loginGui:Destroy()
-		gui.Enabled = true
-
-		local args1 = { "RolePlayName", "davizinscriptsofc" }
-		Rep.RE["1RPNam1eTex1t"]:FireServer(unpack(args1))
-
-		local args2 = { "RolePlayBio", "@davizinscriptsofc" }
-		Rep.RE["1RPNam1eTex1t"]:FireServer(unpack(args2))
-	else
-		senhaBox.Text = ""
-		senhaBox.PlaceholderText = "Senha incorreta"
-	end
+	getKeyButton.Text = "GET KEY"
 end)
 
 --------------------------------------------------------------------
