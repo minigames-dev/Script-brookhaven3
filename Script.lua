@@ -508,85 +508,149 @@ bBoatTP.MouseButton1Click:Connect(function()
 		bBoatTP.BackgroundColor3 = Color3.fromRGB(40,120,40)
 	end
 end)
+local Players = game:GetService("Players")
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+
+local player = Players.LocalPlayer
+local WearRemote = ReplicatedStorage:WaitForChild("Remotes"):WaitForChild("Wear")
+
 --------------------------------------------------------------------
--- COPIAR SKIN (DO LADO DO BOAT TP)
+-- GUI (MENOR E MAIS BONITA)
 --------------------------------------------------------------------
 
-local frameCopiar = Instance.new("Frame", pagDar)
-frameCopiar.Size = UDim2.new(0,260,0,90)
-frameCopiar.Position = UDim2.new(0,300,0,90) -- 👈 DO LADO DO BOAT
-frameCopiar.BackgroundColor3 = Color3.fromRGB(25,25,25)
-frameCopiar.BorderSizePixel = 0
+local gui = Instance.new("ScreenGui", player:WaitForChild("PlayerGui"))
+gui.ResetOnSpawn = false
 
-local cornerCopiar = Instance.new("UICorner", frameCopiar)
-cornerCopiar.CornerRadius = UDim.new(0,15)
+local frame = Instance.new("Frame", gui)
+frame.Size = UDim2.new(0,300,0,150)
+frame.Position = UDim2.new(0.5,-150,0.5,-75)
+frame.BackgroundColor3 = Color3.fromRGB(20,20,20)
+frame.Active = true
+frame.Draggable = true
+frame.BorderSizePixel = 0
+Instance.new("UICorner", frame).CornerRadius = UDim.new(0,18)
 
-local strokeCopiar = Instance.new("UIStroke", frameCopiar)
-strokeCopiar.Color = Color3.fromRGB(0,170,255)
-strokeCopiar.Thickness = 1.5
+local stroke = Instance.new("UIStroke", frame)
+stroke.Color = Color3.fromRGB(0,170,255)
+stroke.Thickness = 2
 
-local titleCopiar = Instance.new("TextLabel", frameCopiar)
-titleCopiar.Size = UDim2.new(1,0,0,30)
-titleCopiar.BackgroundTransparency = 1
-titleCopiar.Text = "COPIAR SKIN"
-titleCopiar.Font = Enum.Font.GothamBold
-titleCopiar.TextScaled = true
-titleCopiar.TextColor3 = Color3.new(1,1,1)
+local title = Instance.new("TextLabel", frame)
+title.Size = UDim2.new(1,0,0,30)
+title.BackgroundTransparency = 1
+title.Text = "COPIAR SKIN"
+title.TextColor3 = Color3.fromRGB(0,170,255)
+title.TextScaled = true
+title.Font = Enum.Font.GothamBold
 
-local boxCopiar = Instance.new("TextBox", frameCopiar)
-boxCopiar.Size = UDim2.new(0.9,0,0,30)
-boxCopiar.Position = UDim2.new(0.05,0,0,35)
-boxCopiar.PlaceholderText = "3 letras do nome"
-boxCopiar.Font = Enum.Font.Gotham
-boxCopiar.TextScaled = true
-boxCopiar.TextColor3 = Color3.new(1,1,1)
-boxCopiar.BackgroundColor3 = Color3.fromRGB(40,40,40)
-boxCopiar.BorderSizePixel = 0
+local box = Instance.new("TextBox", frame)
+box.Size = UDim2.new(0.85,0,0,35)
+box.Position = UDim2.new(0.075,0,0.35,0)
+box.PlaceholderText = "Digite 3 letras do nome"
+box.TextScaled = true
+box.Font = Enum.Font.Gotham
+box.BackgroundColor3 = Color3.fromRGB(35,35,35)
+box.TextColor3 = Color3.new(1,1,1)
+box.BorderSizePixel = 0
+Instance.new("UICorner", box).CornerRadius = UDim.new(0,12)
 
-local cornerBoxCopiar = Instance.new("UICorner", boxCopiar)
-cornerBoxCopiar.CornerRadius = UDim.new(0,10)
+local button = Instance.new("TextButton", frame)
+button.Size = UDim2.new(0.85,0,0,35)
+button.Position = UDim2.new(0.075,0,0.7,0)
+button.Text = "COPIAR"
+button.TextScaled = true
+button.Font = Enum.Font.GothamBold
+button.BackgroundColor3 = Color3.fromRGB(0,170,255)
+button.TextColor3 = Color3.new(1,1,1)
+button.BorderSizePixel = 0
+Instance.new("UICorner", button).CornerRadius = UDim.new(0,12)
 
-local btnCopiar = Instance.new("TextButton", frameCopiar)
-btnCopiar.Size = UDim2.new(0.9,0,0,30)
-btnCopiar.Position = UDim2.new(0.05,0,0,65)
-btnCopiar.Text = "COPIAR"
-btnCopiar.Font = Enum.Font.GothamBold
-btnCopiar.TextScaled = true
-btnCopiar.TextColor3 = Color3.new(1,1,1)
-btnCopiar.BackgroundColor3 = Color3.fromRGB(0,170,255)
-btnCopiar.BorderSizePixel = 0
+--------------------------------------------------------------------
+-- PEGAR IDS COMPLETOS
+--------------------------------------------------------------------
 
-local cornerBtnCopiar = Instance.new("UICorner", btnCopiar)
-cornerBtnCopiar.CornerRadius = UDim.new(0,10)
+local function pegarIDs(target)
 
-addClickSound(btnCopiar)
+    if not target.Character then return {} end
+    local humanoid = target.Character:FindFirstChildOfClass("Humanoid")
+    if not humanoid then return {} end
 
--- FUNÇÃO DE BUSCAR PARCIAL
-local function encontrarJogadorParcial(nome)
-	nome = nome:lower()
-	for _,plr in ipairs(Players:GetPlayers()) do
-		if plr.Name:lower():find(nome) then
-			return plr
-		end
-	end
+    local desc = humanoid:GetAppliedDescription()
+    local ids = {}
+
+    local propriedadesNumero = {
+        "Shirt","Pants","GraphicTShirt","Face","Head","Torso",
+        "LeftArm","RightArm","LeftLeg","RightLeg",
+        "ClimbAnimation","FallAnimation","IdleAnimation",
+        "JumpAnimation","RunAnimation","SwimAnimation","WalkAnimation"
+    }
+
+    for _, prop in ipairs(propriedadesNumero) do
+        local value = desc[prop]
+        if typeof(value) == "number" and value > 0 then
+            table.insert(ids, value)
+        end
+    end
+
+    local acessorios = {
+        desc.BackAccessory, desc.FaceAccessory, desc.FrontAccessory,
+        desc.HairAccessory, desc.HatAccessory, desc.NeckAccessory,
+        desc.ShouldersAccessory, desc.WaistAccessory
+    }
+
+    for _, acc in ipairs(acessorios) do
+        if acc and acc ~= "" then
+            for id in string.gmatch(acc, "%d+") do
+                table.insert(ids, tonumber(id))
+            end
+        end
+    end
+
+    return ids
 end
 
-btnCopiar.MouseButton1Click:Connect(function()
+--------------------------------------------------------------------
+-- FUNÇÃO PARA ACHAR PELO MENOS 3 LETRAS
+--------------------------------------------------------------------
 
-	if #boxCopiar.Text < 3 then return end
+local function encontrarJogadorPorParte(nomeParcial)
+    nomeParcial = string.lower(nomeParcial)
 
-	local target = encontrarJogadorParcial(boxCopiar.Text)
-	if not target then return end
+    for _, plr in ipairs(Players:GetPlayers()) do
+        if string.find(string.lower(plr.Name), nomeParcial, 1, true) then
+            return plr
+        end
+    end
 
-	if not target.Character then return end
-	local humanoid = target.Character:FindFirstChildOfClass("Humanoid")
-	if not humanoid then return end
+    return nil
+end
 
-	local desc = humanoid:GetAppliedDescription()
+--------------------------------------------------------------------
+-- BOTÃO
+--------------------------------------------------------------------
 
-	for _,prop in pairs(desc:GetAccessories(true)) do
-		Rep.Remotes.Wear:InvokeServer(prop.AssetId)
-	end
+button.MouseButton1Click:Connect(function()
+
+    local nome = box.Text
+
+    if #nome < 3 then
+        warn("Digite pelo menos 3 letras.")
+        return
+    end
+
+    local target = encontrarJogadorPorParte(nome)
+
+    if not target then
+        warn("Jogador não encontrado.")
+        return
+    end
+
+    local ids = pegarIDs(target)
+
+    for _, id in ipairs(ids) do
+        WearRemote:InvokeServer(id)
+    end
+
+    print("Todos os IDs enviados para Wear.")
 end)
 --------------------------------------------------------------------
 -- PEGAR ITENS
