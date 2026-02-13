@@ -190,55 +190,85 @@ main.BorderSizePixel = 0
 main.Active = true
 main.Draggable = true
 main.ClipsDescendants = true
---------------------------------------------------------------------
--- BOTÃO X (AZUL)
---------------------------------------------------------------------
-
-local closeButton = Instance.new("TextButton")
-closeButton.Parent = main
-closeButton.Size = UDim2.new(0,30,0,30)
-closeButton.Position = UDim2.new(1,-35,0,5)
-closeButton.Text = "X"
-closeButton.TextScaled = true
-closeButton.Font = Enum.Font.GothamBold
-closeButton.TextColor3 = Color3.fromRGB(255,255,255)
-closeButton.BackgroundColor3 = Color3.fromRGB(0,170,255) -- AZUL
-closeButton.BorderSizePixel = 0
-
-local closeCorner = Instance.new("UICorner")
-closeCorner.CornerRadius = UDim.new(1,0)
-closeCorner.Parent = closeButton
-
---------------------------------------------------------------------
--- BOLA PARA REABRIR (COM IMAGEM)
+-- SISTEMA MINIMIZAR (BOLA)
 --------------------------------------------------------------------
 
-local bola = Instance.new("ImageButton")
-bola.Parent = screenGui -- mesma ScreenGui da main
+local TweenService = game:GetService("TweenService")
+
+local minimizado = false
+local tamanhoNormal = main.Size
+local posNormal = main.Position
+
+-- BOTÃO X
+local btnMin = Instance.new("TextButton", main)
+btnMin.Size = UDim2.new(0,30,0,30)
+btnMin.Position = UDim2.new(1,-35,0,5)
+btnMin.BackgroundColor3 = Color3.fromRGB(0, 102, 255) -- azul
+btnMin.Text = "" -- vamos usar a imagem, então não precisa de texto
+btnMin.BorderSizePixel = 0
+
+local cornerMin = Instance.new("UICorner", btnMin)
+cornerMin.CornerRadius = UDim.new(1,0)
+
+-- Imagem dentro do botão
+local img = Instance.new("ImageLabel", btnMin)
+img.Size = UDim2.new(1,0,1,0)
+img.Position = UDim2.new(0,0,0,0)
+img.BackgroundTransparency = 1
+img.Image = "rbxassetid://8508980536" -- sua imagem
+img.ScaleType = Enum.ScaleType.Fit
+
+addClickSound(btnMin)
+
+-- BOLINHA
+local bola = Instance.new("TextButton", gui)
 bola.Size = UDim2.new(0,60,0,60)
-bola.Position = UDim2.new(0,20,0.5,-30)
-bola.Image = "rbxassetid://8508980536"
-bola.BackgroundTransparency = 1
+bola.Position = UDim2.new(0.5,-30,0.5,-30)
+bola.BackgroundColor3 = Color3.fromRGB(0,170,255)
+bola.Text = "DAV"
+bola.TextColor3 = Color3.new(1,1,1)
+bola.Font = Enum.Font.GothamBold
+bola.TextScaled = true
 bola.Visible = false
+bola.BorderSizePixel = 0
 bola.Active = true
 bola.Draggable = true
 
-local bolaCorner = Instance.new("UICorner")
-bolaCorner.CornerRadius = UDim.new(1,0)
-bolaCorner.Parent = bola
+local cornerBola = Instance.new("UICorner", bola)
+cornerBola.CornerRadius = UDim.new(1,0)
 
---------------------------------------------------------------------
--- FUNÇÃO ABRIR / FECHAR
---------------------------------------------------------------------
+addClickSound(bola)
 
-closeButton.MouseButton1Click:Connect(function()
-    main.Visible = false
-    bola.Visible = true
+-- FUNÇÃO MINIMIZAR
+btnMin.MouseButton1Click:Connect(function()
+	if minimizado then return end
+	minimizado = true
+
+	TweenService:Create(main, TweenInfo.new(0.4, Enum.EasingStyle.Back), {
+		Size = UDim2.new(0,60,0,60),
+		Position = UDim2.new(0.5,-30,0.5,-30)
+	}):Play()
+
+	task.wait(0.35)
+
+	main.Visible = false
+	bola.Visible = true
 end)
 
+-- FUNÇÃO RESTAURAR
 bola.MouseButton1Click:Connect(function()
-    main.Visible = true
-    bola.Visible = false
+	bola.Visible = false
+	main.Visible = true
+
+	main.Size = UDim2.new(0,60,0,60)
+	main.Position = UDim2.new(0.5,-30,0.5,-30)
+
+	TweenService:Create(main, TweenInfo.new(0.4, Enum.EasingStyle.Back), {
+		Size = tamanhoNormal,
+		Position = posNormal
+	}):Play()
+
+	minimizado = false
 end)
 local titulo = Instance.new("TextLabel", main)
 titulo.Size = UDim2.new(1,0,0,40)
