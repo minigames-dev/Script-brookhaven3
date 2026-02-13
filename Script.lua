@@ -234,7 +234,7 @@ local abaDar     = criarAba("INICIO",1,totalAbas)
 local abaPegar   = criarAba("RGB NAME",2,totalAbas)
 local abaAceitar = criarAba("Troll",3,totalAbas)
 local abaEquip   = criarAba("Premium",4,totalAbas)
-local abaPlayers = criarAba("PLAYERS",5,totalAbas)
+local abaPlayers = criarAba("House",5,totalAbas)
 local abaTP      = criarAba("Credits",6,totalAbas)
 
 --------------------------------------------------------------------
@@ -802,43 +802,85 @@ end)
 
 
 --------------------------------------------------------------------
--- Player
+-- House
 --------------------------------------------------------------------
 
-local listaPlayers = Instance.new("Frame", pagPlayers)
-listaPlayers.Size = UDim2.new(0,main.Size.X.Offset-40,0,main.Size.Y.Offset-100)
-listaPlayers.Position = UDim2.new(0,20,0,20)
-listaPlayers.BackgroundColor3 = Color3.fromRGB(50,50,50)
-listaPlayers.Active = true
-listaPlayers.Draggable = true
-listaPlayers.ClipsDescendants = true
+--------------------------------------------------------------------
+-- AUTO CAMPANHA + AUTO KNOCK (ABA HOUSE)
+--------------------------------------------------------------------
 
-local jogadorSelecionado = nil
+local autoHouseON = false
 
-local function atualizarLista()
-	for _,c in pairs(listaPlayers:GetChildren()) do
-		if c:IsA("TextButton") then c:Destroy() end
-	end
-	for i,p in ipairs(Players:GetPlayers()) do
-		local b = Instance.new("TextButton", listaPlayers)
-		b.Size = UDim2.new(1,-10,0,35)
-		b.Position = UDim2.new(0,5,0,(i-1)*40+5)
-		b.BackgroundColor3 = Color3.fromRGB(70,70,70)
-		b.Text = p.Name
-		b.TextColor3 = Color3.new(1,1,1)
-		b.Font = Enum.Font.GothamBold
-		b.TextScaled = true
-		addClickSound(b)
-		b.MouseButton1Click:Connect(function()
-			jogadorSelecionado = p
-			b.BackgroundColor3 = Color3.fromRGB(0,120,255)
-		end)
+local frameHouse = Instance.new("Frame", pagPlayers)
+frameHouse.Size = UDim2.new(0, 260, 0, 120)
+frameHouse.Position = UDim2.new(0, 20, 0, 20)
+frameHouse.BackgroundColor3 = Color3.fromRGB(25,25,25)
+frameHouse.BorderSizePixel = 0
+
+local cornerHouse = Instance.new("UICorner", frameHouse)
+cornerHouse.CornerRadius = UDim.new(0,15)
+
+local strokeHouse = Instance.new("UIStroke", frameHouse)
+strokeHouse.Color = Color3.fromRGB(0,170,255)
+strokeHouse.Thickness = 1.5
+
+local titleHouse = Instance.new("TextLabel", frameHouse)
+titleHouse.Size = UDim2.new(1,0,0,35)
+titleHouse.BackgroundTransparency = 1
+titleHouse.Text = "AUTO DOORBELL"
+titleHouse.Font = Enum.Font.GothamBold
+titleHouse.TextScaled = true
+titleHouse.TextColor3 = Color3.new(1,1,1)
+
+local btnHouse = Instance.new("TextButton", frameHouse)
+btnHouse.Size = UDim2.new(0,180,0,45)
+btnHouse.Position = UDim2.new(0.5,-90,0,55)
+btnHouse.Text = "ATIVAR"
+btnHouse.BackgroundColor3 = Color3.fromRGB(40,40,40)
+btnHouse.TextColor3 = Color3.new(1,1,1)
+btnHouse.Font = Enum.Font.GothamBold
+btnHouse.TextScaled = true
+btnHouse.BorderSizePixel = 0
+addClickSound(btnHouse)
+
+local cornerBtnHouse = Instance.new("UICorner", btnHouse)
+cornerBtnHouse.CornerRadius = UDim.new(0,12)
+
+-- FUNÇÃO QUE FUNCIONA EM QUALQUER CASA
+local function clicarCampainha()
+	for _, obj in pairs(workspace:GetDescendants()) do
+		if obj:IsA("ClickDetector") then
+			if obj.Parent and obj.Parent.Name == "TouchBell" then
+				fireclickdetector(obj)
+			end
+		end
 	end
 end
 
-atualizarLista()
-Players.PlayerAdded:Connect(atualizarLista)
-Players.PlayerRemoving:Connect(atualizarLista)
+-- LOOP
+task.spawn(function()
+	while true do
+		if autoHouseON then
+			pcall(function()
+				clicarCampainha()
+			end)
+		end
+		task.wait(0.5)
+	end
+end)
+
+-- BOTÃO
+btnHouse.MouseButton1Click:Connect(function()
+	autoHouseON = not autoHouseON
+	
+	if autoHouseON then
+		btnHouse.Text = "DESATIVAR"
+		btnHouse.BackgroundColor3 = Color3.fromRGB(170,40,40)
+	else
+		btnHouse.Text = "ATIVAR"
+		btnHouse.BackgroundColor3 = Color3.fromRGB(40,40,40)
+	end
+end)
 
 --------------------------------------------------------------------
 -- Credits
