@@ -620,37 +620,57 @@ local function encontrarJogadorPorParte(nomeParcial)
             return plr
         end
     end
-
-    return nil
-end
-
 --------------------------------------------------------------------
--- BOTÃO
+-- COPIAR SKIN (AO LADO DO BOAT TP)
 --------------------------------------------------------------------
 
-button.MouseButton1Click:Connect(function()
+-- Caixa nome
+local boxSkin = Instance.new("TextBox", pagDar)
+boxSkin.Size = UDim2.new(0,260,0,35)
+boxSkin.Position = UDim2.new(0,300,0,90) -- 👈 DO LADO
+boxSkin.PlaceholderText = "Digite 3 letras do nome"
+boxSkin.Text = ""
+boxSkin.Font = Enum.Font.GothamBold
+boxSkin.TextScaled = true
+boxSkin.TextColor3 = Color3.new(1,1,1)
+boxSkin.BackgroundColor3 = Color3.fromRGB(55,55,55)
+boxSkin.BorderSizePixel = 0
 
-    local nome = box.Text
+-- Botão copiar
+local btnSkin = Instance.new("TextButton", pagDar)
+btnSkin.Size = UDim2.new(0,260,0,45)
+btnSkin.Position = UDim2.new(0,300,0,135) -- 👈 DO LADO DO BOAT
+btnSkin.BackgroundColor3 = Color3.fromRGB(0,170,255)
+btnSkin.Text = "COPIAR SKIN"
+btnSkin.TextColor3 = Color3.new(1,1,1)
+btnSkin.Font = Enum.Font.GothamBold
+btnSkin.TextScaled = true
+btnSkin.BorderSizePixel = 0
 
-    if #nome < 3 then
-        warn("Digite pelo menos 3 letras.")
-        return
-    end
+addClickSound(btnSkin)
 
-    local target = encontrarJogadorPorParte(nome)
+btnSkin.MouseButton1Click:Connect(function()
 
-    if not target then
-        warn("Jogador não encontrado.")
-        return
-    end
+	local nome = boxSkin.Text
 
-    local ids = pegarIDs(target)
+	if #nome < 3 then
+		warn("Digite pelo menos 3 letras.")
+		return
+	end
 
-    for _, id in ipairs(ids) do
-        WearRemote:InvokeServer(id)
-    end
+	local target = encontrarJogadorPorParte(nome)
 
-    print("Todos os IDs enviados para Wear.")
+	if not target then
+		warn("Jogador não encontrado.")
+		return
+	end
+
+	local ids = pegarIDs(target)
+
+	for _, id in ipairs(ids) do
+		WearRemote:InvokeServer(id)
+	end
+
 end)
 --------------------------------------------------------------------
 -- PEGAR ITENS
