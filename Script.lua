@@ -233,7 +233,7 @@ local totalAbas = 6
 local abaDar     = criarAba("INICIO",1,totalAbas)
 local abaPegar   = criarAba("RGB NAME",2,totalAbas)
 local abaAceitar = criarAba("Troll",3,totalAbas)
-local abaEquip   = criarAba("AUTO EQUIP",4,totalAbas)
+local abaEquip   = criarAba("Premium",4,totalAbas)
 local abaPlayers = criarAba("PLAYERS",5,totalAbas)
 local abaTP      = criarAba("Credits",6,totalAbas)
 
@@ -717,39 +717,92 @@ task.spawn(function()
 	end
 end)
 --------------------------------------------------------------------
--- AUTO EQUIP
+-- Premium
+--------------------------------------------------------------------
+--------------------------------------------------------------------
+-- RAINBOW MOTOR (ABA PREMIUM)
 --------------------------------------------------------------------
 
-local bEquip = Instance.new("TextButton", pagEquip)
-bEquip.Size = UDim2.new(0,200,0,50)
-bEquip.Position = UDim2.new(0,20,0,20)
-bEquip.BackgroundColor3 = Color3.fromRGB(50,200,50)
-bEquip.Text = "LIGAR / DESLIGAR AUTO EQUIP"
-bEquip.TextColor3 = Color3.new(1,1,1)
-bEquip.Font = Enum.Font.GothamBold
-bEquip.TextScaled = true
-addClickSound(bEquip)
+local RunService = game:GetService("RunService")
+local remoteMotor = Rep:WaitForChild("RE"):WaitForChild("1Player1sCa1r")
 
-local ativoEquip = false
-bEquip.MouseButton1Click:Connect(function()
-	ativoEquip = not ativoEquip
-	bEquip.Text = ativoEquip and "AUTO EQUIP ATIVADO" or "LIGAR / DESLIGAR AUTO EQUIP"
-end)
+-- Frame
+local frameMotor = Instance.new("Frame", pagEquip)
+frameMotor.Size = UDim2.new(0, 260, 0, 120)
+frameMotor.Position = UDim2.new(0, 20, 0, 20)
+frameMotor.BackgroundColor3 = Color3.fromRGB(25,25,25)
+frameMotor.BorderSizePixel = 0
 
-task.spawn(function()
-	while true do
-		if ativoEquip then
-			for _,item in ipairs(itensParaPegar) do
-				local t = Player.Backpack:FindFirstChild(item)
-				if t then Player.Character.Humanoid:EquipTool(t) end
-			end
-		end
-		task.wait(0.3)
+local cornerMotor = Instance.new("UICorner", frameMotor)
+cornerMotor.CornerRadius = UDim.new(0,15)
+
+local strokeMotor = Instance.new("UIStroke", frameMotor)
+strokeMotor.Color = Color3.fromRGB(0,170,255)
+strokeMotor.Thickness = 1.5
+
+-- Título
+local titleMotor = Instance.new("TextLabel", frameMotor)
+titleMotor.Size = UDim2.new(1,0,0,35)
+titleMotor.BackgroundTransparency = 1
+titleMotor.Text = "RAINBOW MOTOR"
+titleMotor.Font = Enum.Font.GothamBold
+titleMotor.TextScaled = true
+titleMotor.TextColor3 = Color3.new(1,1,1)
+
+-- Botão
+local btnMotor = Instance.new("TextButton", frameMotor)
+btnMotor.Size = UDim2.new(0,180,0,45)
+btnMotor.Position = UDim2.new(0.5,-90,0,55)
+btnMotor.Text = "ATIVAR"
+btnMotor.BackgroundColor3 = Color3.fromRGB(40,40,40)
+btnMotor.TextColor3 = Color3.new(1,1,1)
+btnMotor.Font = Enum.Font.GothamBold
+btnMotor.TextScaled = true
+btnMotor.BorderSizePixel = 0
+addClickSound(btnMotor)
+
+local cornerBtnMotor = Instance.new("UICorner", btnMotor)
+cornerBtnMotor.CornerRadius = UDim.new(0,12)
+
+-- Sistema Rainbow Suave
+local motorON = false
+local hue = 0
+local speed = 0.2
+local motorConnection
+
+local function startMotor()
+	motorConnection = RunService.RenderStepped:Connect(function(delta)
+		hue = (hue + delta * speed) % 1
+		local color = Color3.fromHSV(hue,1,1)
+		remoteMotor:FireServer("NoMotorColor", color)
+	end)
+end
+
+local function stopMotor()
+	if motorConnection then
+		motorConnection:Disconnect()
+		motorConnection = nil
+	end
+	remoteMotor:FireServer("NoMotorColor", Color3.new(0,0,0))
+end
+
+btnMotor.MouseButton1Click:Connect(function()
+	motorON = not motorON
+	
+	if motorON then
+		btnMotor.Text = "DESATIVAR"
+		btnMotor.BackgroundColor3 = Color3.fromRGB(170,40,40)
+		startMotor()
+	else
+		btnMotor.Text = "ATIVAR"
+		btnMotor.BackgroundColor3 = Color3.fromRGB(40,40,40)
+		stopMotor()
 	end
 end)
 
+
 --------------------------------------------------------------------
--- PLAYERS
+-- Player
 --------------------------------------------------------------------
 
 local listaPlayers = Instance.new("Frame", pagPlayers)
