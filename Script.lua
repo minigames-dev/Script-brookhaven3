@@ -190,7 +190,82 @@ main.BorderSizePixel = 0
 main.Active = true
 main.Draggable = true
 main.ClipsDescendants = true
+--------------------------------------------------------------------
+-- SISTEMA MINIMIZAR (BOLA)
+--------------------------------------------------------------------
 
+local TweenService = game:GetService("TweenService")
+
+local minimizado = false
+local tamanhoNormal = main.Size
+local posNormal = main.Position
+
+-- BOTÃO X
+local btnMin = Instance.new("TextButton", main)
+btnMin.Size = UDim2.new(0,30,0,30)
+btnMin.Position = UDim2.new(1,-35,0,5)
+btnMin.BackgroundColor3 = Color3.fromRGB(170,40,40)
+btnMin.Text = "X"
+btnMin.TextColor3 = Color3.new(1,1,1)
+btnMin.Font = Enum.Font.GothamBold
+btnMin.TextScaled = true
+btnMin.BorderSizePixel = 0
+
+local cornerMin = Instance.new("UICorner", btnMin)
+cornerMin.CornerRadius = UDim.new(1,0)
+
+addClickSound(btnMin)
+
+-- BOLINHA
+local bola = Instance.new("TextButton", gui)
+bola.Size = UDim2.new(0,60,0,60)
+bola.Position = UDim2.new(0.5,-30,0.5,-30)
+bola.BackgroundColor3 = Color3.fromRGB(0,170,255)
+bola.Text = "DAV"
+bola.TextColor3 = Color3.new(1,1,1)
+bola.Font = Enum.Font.GothamBold
+bola.TextScaled = true
+bola.Visible = false
+bola.BorderSizePixel = 0
+bola.Active = true
+bola.Draggable = true
+
+local cornerBola = Instance.new("UICorner", bola)
+cornerBola.CornerRadius = UDim.new(1,0)
+
+addClickSound(bola)
+
+-- FUNÇÃO MINIMIZAR
+btnMin.MouseButton1Click:Connect(function()
+	if minimizado then return end
+	minimizado = true
+
+	TweenService:Create(main, TweenInfo.new(0.4, Enum.EasingStyle.Back), {
+		Size = UDim2.new(0,60,0,60),
+		Position = UDim2.new(0.5,-30,0.5,-30)
+	}):Play()
+
+	task.wait(0.35)
+
+	main.Visible = false
+	bola.Visible = true
+end)
+
+-- FUNÇÃO RESTAURAR
+bola.MouseButton1Click:Connect(function()
+	bola.Visible = false
+	main.Visible = true
+
+	main.Size = UDim2.new(0,60,0,60)
+	main.Position = UDim2.new(0.5,-30,0.5,-30)
+
+	TweenService:Create(main, TweenInfo.new(0.4, Enum.EasingStyle.Back), {
+		Size = tamanhoNormal,
+		Position = posNormal
+	}):Play()
+
+	minimizado = false
+end)
 local titulo = Instance.new("TextLabel", main)
 titulo.Size = UDim2.new(1,0,0,40)
 titulo.Position = UDim2.new(0,0,0,0)
