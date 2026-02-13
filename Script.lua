@@ -881,7 +881,85 @@ btnHouse.MouseButton1Click:Connect(function()
 		btnHouse.BackgroundColor3 = Color3.fromRGB(40,40,40)
 	end
 end)
+--------------------------------------------------------------------
+-- RAINBOW HOUSE (ABA HOUSE)
+--------------------------------------------------------------------
 
+local remoteHouseColor = Rep:WaitForChild("RE"):WaitForChild("1Player1sHous1e")
+
+local frameRainbowHouse = Instance.new("Frame", pagPlayers)
+frameRainbowHouse.Size = UDim2.new(0, 260, 0, 120)
+frameRainbowHouse.Position = UDim2.new(0, 20, 0, 160) -- 👈 EMBAIXO DO AUTO DOORBELL
+frameRainbowHouse.BackgroundColor3 = Color3.fromRGB(25,25,25)
+frameRainbowHouse.BorderSizePixel = 0
+
+local cornerRainbowHouse = Instance.new("UICorner", frameRainbowHouse)
+cornerRainbowHouse.CornerRadius = UDim.new(0,15)
+
+local strokeRainbowHouse = Instance.new("UIStroke", frameRainbowHouse)
+strokeRainbowHouse.Color = Color3.fromRGB(170,0,255)
+strokeRainbowHouse.Thickness = 1.5
+
+local titleRainbowHouse = Instance.new("TextLabel", frameRainbowHouse)
+titleRainbowHouse.Size = UDim2.new(1,0,0,35)
+titleRainbowHouse.BackgroundTransparency = 1
+titleRainbowHouse.Text = "RAINBOW HOUSE"
+titleRainbowHouse.Font = Enum.Font.GothamBold
+titleRainbowHouse.TextScaled = true
+titleRainbowHouse.TextColor3 = Color3.new(1,1,1)
+
+local btnRainbowHouse = Instance.new("TextButton", frameRainbowHouse)
+btnRainbowHouse.Size = UDim2.new(0,180,0,45)
+btnRainbowHouse.Position = UDim2.new(0.5,-90,0,55)
+btnRainbowHouse.Text = "ATIVAR"
+btnRainbowHouse.BackgroundColor3 = Color3.fromRGB(40,40,40)
+btnRainbowHouse.TextColor3 = Color3.new(1,1,1)
+btnRainbowHouse.Font = Enum.Font.GothamBold
+btnRainbowHouse.TextScaled = true
+btnRainbowHouse.BorderSizePixel = 0
+addClickSound(btnRainbowHouse)
+
+local cornerBtnRainbow = Instance.new("UICorner", btnRainbowHouse)
+cornerBtnRainbow.CornerRadius = UDim.new(0,12)
+
+-- SISTEMA RAINBOW SUAVE
+local rainbowHouseON = false
+local hueHouse = 0
+local speedHouse = 0.15
+local houseConnection
+
+local RunService = game:GetService("RunService")
+
+local function startRainbowHouse()
+	houseConnection = RunService.RenderStepped:Connect(function(delta)
+		hueHouse = (hueHouse + delta * speedHouse) % 1
+		local color = Color3.fromHSV(hueHouse,1,1)
+		remoteHouseColor:FireServer("ColorPickHouse", color)
+		btnRainbowHouse.BackgroundColor3 = color
+	end)
+end
+
+local function stopRainbowHouse()
+	if houseConnection then
+		houseConnection:Disconnect()
+		houseConnection = nil
+	end
+	
+	btnRainbowHouse.BackgroundColor3 = Color3.fromRGB(40,40,40)
+	remoteHouseColor:FireServer("ColorPickHouse", Color3.new(1,1,1))
+end
+
+btnRainbowHouse.MouseButton1Click:Connect(function()
+	rainbowHouseON = not rainbowHouseON
+	
+	if rainbowHouseON then
+		btnRainbowHouse.Text = "DESATIVAR"
+		startRainbowHouse()
+	else
+		btnRainbowHouse.Text = "ATIVAR"
+		stopRainbowHouse()
+	end
+end)
 --------------------------------------------------------------------
 -- Credits
 --------------------------------------------------------------------
