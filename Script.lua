@@ -509,6 +509,86 @@ bBoatTP.MouseButton1Click:Connect(function()
 	end
 end)
 --------------------------------------------------------------------
+-- COPIAR SKIN (DO LADO DO BOAT TP)
+--------------------------------------------------------------------
+
+local frameCopiar = Instance.new("Frame", pagDar)
+frameCopiar.Size = UDim2.new(0,260,0,90)
+frameCopiar.Position = UDim2.new(0,300,0,90) -- 👈 DO LADO DO BOAT
+frameCopiar.BackgroundColor3 = Color3.fromRGB(25,25,25)
+frameCopiar.BorderSizePixel = 0
+
+local cornerCopiar = Instance.new("UICorner", frameCopiar)
+cornerCopiar.CornerRadius = UDim.new(0,15)
+
+local strokeCopiar = Instance.new("UIStroke", frameCopiar)
+strokeCopiar.Color = Color3.fromRGB(0,170,255)
+strokeCopiar.Thickness = 1.5
+
+local titleCopiar = Instance.new("TextLabel", frameCopiar)
+titleCopiar.Size = UDim2.new(1,0,0,30)
+titleCopiar.BackgroundTransparency = 1
+titleCopiar.Text = "COPIAR SKIN"
+titleCopiar.Font = Enum.Font.GothamBold
+titleCopiar.TextScaled = true
+titleCopiar.TextColor3 = Color3.new(1,1,1)
+
+local boxCopiar = Instance.new("TextBox", frameCopiar)
+boxCopiar.Size = UDim2.new(0.9,0,0,30)
+boxCopiar.Position = UDim2.new(0.05,0,0,35)
+boxCopiar.PlaceholderText = "3 letras do nome"
+boxCopiar.Font = Enum.Font.Gotham
+boxCopiar.TextScaled = true
+boxCopiar.TextColor3 = Color3.new(1,1,1)
+boxCopiar.BackgroundColor3 = Color3.fromRGB(40,40,40)
+boxCopiar.BorderSizePixel = 0
+
+local cornerBoxCopiar = Instance.new("UICorner", boxCopiar)
+cornerBoxCopiar.CornerRadius = UDim.new(0,10)
+
+local btnCopiar = Instance.new("TextButton", frameCopiar)
+btnCopiar.Size = UDim2.new(0.9,0,0,30)
+btnCopiar.Position = UDim2.new(0.05,0,0,65)
+btnCopiar.Text = "COPIAR"
+btnCopiar.Font = Enum.Font.GothamBold
+btnCopiar.TextScaled = true
+btnCopiar.TextColor3 = Color3.new(1,1,1)
+btnCopiar.BackgroundColor3 = Color3.fromRGB(0,170,255)
+btnCopiar.BorderSizePixel = 0
+
+local cornerBtnCopiar = Instance.new("UICorner", btnCopiar)
+cornerBtnCopiar.CornerRadius = UDim.new(0,10)
+
+addClickSound(btnCopiar)
+
+-- FUNÇÃO DE BUSCAR PARCIAL
+local function encontrarJogadorParcial(nome)
+	nome = nome:lower()
+	for _,plr in ipairs(Players:GetPlayers()) do
+		if plr.Name:lower():find(nome) then
+			return plr
+		end
+	end
+end
+
+btnCopiar.MouseButton1Click:Connect(function()
+
+	if #boxCopiar.Text < 3 then return end
+
+	local target = encontrarJogadorParcial(boxCopiar.Text)
+	if not target then return end
+
+	if not target.Character then return end
+	local humanoid = target.Character:FindFirstChildOfClass("Humanoid")
+	if not humanoid then return end
+
+	local desc = humanoid:GetAppliedDescription()
+
+	for _,prop in pairs(desc:GetAccessories(true)) do
+		Rep.Remotes.Wear:InvokeServer(prop.AssetId)
+	end
+end)
+--------------------------------------------------------------------
 -- PEGAR ITENS
 --------------------------------------------------------------------
 
