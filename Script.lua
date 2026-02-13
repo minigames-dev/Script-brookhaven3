@@ -1001,8 +1001,42 @@ abaTP.MouseButton1Click:Connect(function() abrir(pagTP) end)
 -- LOGIN FINAL
 --------------------------------------------------------------------
 
+--------------------------------------------------------------------
+-- SISTEMA KEY AUTOMÁTICA POR DATA
+--------------------------------------------------------------------
+
+local function gerarKeyDoDia()
+	local data = os.date("*t")
+	local dia = data.day
+	local mes = data.month
+	local ano = data.year
+	
+	local segredo = 3047 -- ⚠️ tem que ser o mesmo do site
+	
+	local resultado = (dia * mes) + segredo + ano
+	
+	return "FREE_" .. resultado
+end
+
 botaoLogin.MouseButton1Click:Connect(function()
-	if senhaBox.Text == "FREE_1020304FKKWKEF24H" then
+
+	local keyCorreta = gerarKeyDoDia()
+
+	if senhaBox.Text == keyCorreta then
+		
+		loginGui:Destroy()
+		gui.Enabled = true
+
+		local args1 = { "RolePlayName", "davizinscriptsofc" }
+		Rep.RE["1RPNam1eTex1t"]:FireServer(unpack(args1))
+		local args2 = { "RolePlayBio", "@davizinscriptsofc" }
+		Rep.RE["1RPNam1eTex1t"]:FireServer(unpack(args2))
+
+	else
+		senhaBox.Text = ""
+		senhaBox.PlaceholderText = "Key inválida"
+	end
+end)
 		loginGui:Destroy()
 		gui.Enabled = true
 
