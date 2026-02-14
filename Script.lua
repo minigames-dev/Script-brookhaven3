@@ -604,54 +604,112 @@ local function pegarIDs(target)
             end
         end
     end
+--------------------------------------------------------------------
+-- COPIAR SKIN (ABA INICIO - EMBAIXO DO BOAT TP)
+--------------------------------------------------------------------
 
-    return ids
+local WearRemote = ReplicatedStorage:WaitForChild("Remotes"):WaitForChild("Wear")
+
+local function pegarIDs(target)
+	if not target.Character then return {} end
+	local humanoid = target.Character:FindFirstChildOfClass("Humanoid")
+	if not humanoid then return {} end
+
+	local desc = humanoid:GetAppliedDescription()
+	local ids = {}
+
+	local propriedadesNumero = {
+		"Shirt","Pants","GraphicTShirt","Face","Head","Torso",
+		"LeftArm","RightArm","LeftLeg","RightLeg",
+		"ClimbAnimation","FallAnimation","IdleAnimation",
+		"JumpAnimation","RunAnimation","SwimAnimation","WalkAnimation"
+	}
+
+	for _, prop in ipairs(propriedadesNumero) do
+		local value = desc[prop]
+		if typeof(value) == "number" and value > 0 then
+			table.insert(ids, value)
+		end
+	end
+
+	local acessorios = {
+		desc.BackAccessory, desc.FaceAccessory, desc.FrontAccessory,
+		desc.HairAccessory, desc.HatAccessory, desc.NeckAccessory,
+		desc.ShouldersAccessory, desc.WaistAccessory
+	}
+
+	for _, acc in ipairs(acessorios) do
+		if acc and acc ~= "" then
+			for id in string.gmatch(acc, "%d+") do
+				table.insert(ids, tonumber(id))
+			end
+		end
+	 end
+
+	return ids
 end
 
---------------------------------------------------------------------
--- FUNÇÃO PARA ACHAR PELO MENOS 3 LETRAS
---------------------------------------------------------------------
-
 local function encontrarJogadorPorParte(nomeParcial)
-    nomeParcial = string.lower(nomeParcial)
+	nomeParcial = string.lower(nomeParcial)
 
-    for _, plr in ipairs(Players:GetPlayers()) do
-        if string.find(string.lower(plr.Name), nomeParcial, 1, true) then
-            return plr
-        end
-    end
---------------------------------------------------------------------
--- COPIAR SKIN (AO LADO DO BOAT TP)
---------------------------------------------------------------------
+	for _, plr in ipairs(Players:GetPlayers()) do
+		if string.find(string.lower(plr.Name), nomeParcial, 1, true) then
+			return plr
+		end
+	end
 
--- Caixa nome
-local boxSkin = Instance.new("TextBox", pagDar)
-boxSkin.Size = UDim2.new(0,260,0,35)
-boxSkin.Position = UDim2.new(0,300,0,90) -- 👈 DO LADO
-boxSkin.PlaceholderText = "Digite 3 letras do nome"
-boxSkin.Text = ""
-boxSkin.Font = Enum.Font.GothamBold
-boxSkin.TextScaled = true
-boxSkin.TextColor3 = Color3.new(1,1,1)
-boxSkin.BackgroundColor3 = Color3.fromRGB(55,55,55)
-boxSkin.BorderSizePixel = 0
+	return nil
+end
 
--- Botão copiar
-local btnSkin = Instance.new("TextButton", pagDar)
-btnSkin.Size = UDim2.new(0,260,0,45)
-btnSkin.Position = UDim2.new(0,300,0,135) -- 👈 DO LADO DO BOAT
-btnSkin.BackgroundColor3 = Color3.fromRGB(0,170,255)
-btnSkin.Text = "COPIAR SKIN"
-btnSkin.TextColor3 = Color3.new(1,1,1)
-btnSkin.Font = Enum.Font.GothamBold
-btnSkin.TextScaled = true
-btnSkin.BorderSizePixel = 0
+-- FRAME
+local frameSkin = Instance.new("Frame", pagDar)
+frameSkin.Size = UDim2.new(0,260,0,120)
+frameSkin.Position = UDim2.new(0,20,0,200)
+frameSkin.BackgroundColor3 = Color3.fromRGB(20,20,20)
+frameSkin.BorderSizePixel = 0
 
-addClickSound(btnSkin)
+Instance.new("UICorner", frameSkin).CornerRadius = UDim.new(0,15)
 
-btnSkin.MouseButton1Click:Connect(function()
+local strokeSkin = Instance.new("UIStroke", frameSkin)
+strokeSkin.Color = Color3.fromRGB(0,170,255)
+strokeSkin.Thickness = 1.5
 
-	local nome = boxSkin.Text
+local titleSkin = Instance.new("TextLabel", frameSkin)
+titleSkin.Size = UDim2.new(1,0,0,30)
+titleSkin.BackgroundTransparency = 1
+titleSkin.Text = "COPIAR SKIN"
+titleSkin.TextColor3 = Color3.fromRGB(0,170,255)
+titleSkin.TextScaled = true
+titleSkin.Font = Enum.Font.GothamBold
+
+local box = Instance.new("TextBox", frameSkin)
+box.Size = UDim2.new(0.85,0,0,35)
+box.Position = UDim2.new(0.075,0,0,40)
+box.PlaceholderText = "Digite 3 letras do nome"
+box.TextScaled = true
+box.Font = Enum.Font.Gotham
+box.BackgroundColor3 = Color3.fromRGB(35,35,35)
+box.TextColor3 = Color3.new(1,1,1)
+box.BorderSizePixel = 0
+Instance.new("UICorner", box).CornerRadius = UDim.new(0,12)
+
+local buttonSkin = Instance.new("TextButton", frameSkin)
+buttonSkin.Size = UDim2.new(0.85,0,0,35)
+buttonSkin.Position = UDim2.new(0.075,0,0,80)
+buttonSkin.Text = "COPIAR"
+buttonSkin.TextScaled = true
+buttonSkin.Font = Enum.Font.GothamBold
+buttonSkin.BackgroundColor3 = Color3.fromRGB(0,170,255)
+buttonSkin.TextColor3 = Color3.new(1,1,1)
+buttonSkin.BorderSizePixel = 0
+Instance.new("UICorner", buttonSkin).CornerRadius = UDim.new(0,12)
+
+addClickSound(buttonSkin)
+
+-- BOTÃO FUNCIONANDO
+buttonSkin.MouseButton1Click:Connect(function()
+
+	local nome = box.Text
 
 	if #nome < 3 then
 		warn("Digite pelo menos 3 letras.")
@@ -671,6 +729,7 @@ btnSkin.MouseButton1Click:Connect(function()
 		WearRemote:InvokeServer(id)
 	end
 
+	print("Todos os IDs enviados para Wear.")
 end)
 --------------------------------------------------------------------
 -- PEGAR ITENS
