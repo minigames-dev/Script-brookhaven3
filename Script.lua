@@ -1348,7 +1348,7 @@ abaTP.MouseButton1Click:Connect(function() abrir(pagTP) end)
 --------------------------------------------------------------------
 
 botaoLogin.MouseButton1Click:Connect(function()
-	if senhaBox.Text == "FREE_1020304FKKWKEF24H" then
+	if senhaBox.Text == "FREE_QPSLRKTNVJRUEKX24" then
 		loginGui:Destroy()
 		gui.Enabled = true
 
