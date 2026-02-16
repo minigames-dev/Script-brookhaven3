@@ -177,9 +177,11 @@ end)
 -- GUI PRINCIPAL
 --------------------------------------------------------------------
 
-local gui = Instance.new("ScreenGui", Player.PlayerGui)
+local gui = Instance.new("ScreenGui")
 gui.Name = "davizinscripts"
+gui.Parent = Player.PlayerGui
 gui.Enabled = false
+gui.ResetOnSpawn = false -- 👈 ADICIONA ISSO
 
 local main = Instance.new("Frame", gui)
 main.Size = UDim2.new(0,700,0,450)
