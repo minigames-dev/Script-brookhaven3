@@ -1230,6 +1230,88 @@ btnHouse.MouseButton1Click:Connect(function()
 	end
 end)
 --------------------------------------------------------------------
+-- AUTO CONVIDAR GERAL (ABA HOUSE)
+--------------------------------------------------------------------
+
+local Remotes = Rep:WaitForChild("Remotes")
+local StartFreeParty = Remotes:WaitForChild("StartFreeParty")
+local PartyInviteMore = Remotes:WaitForChild("PartyInviteMore")
+
+local autoInviteON = false
+local houseOwnerUserId = Player.UserId -- usa você como dono
+
+local frameInvite = Instance.new("Frame", pagPlayers)
+frameInvite.Size = UDim2.new(0, 260, 0, 120)
+frameInvite.Position = UDim2.new(0, 300, 0, 20) -- 👈 DO LADO DO DOORBELL
+frameInvite.BackgroundColor3 = Color3.fromRGB(25,25,25)
+frameInvite.BorderSizePixel = 0
+
+Instance.new("UICorner", frameInvite).CornerRadius = UDim.new(0,15)
+
+local strokeInvite = Instance.new("UIStroke", frameInvite)
+strokeInvite.Color = Color3.fromRGB(0,255,120)
+strokeInvite.Thickness = 1.5
+
+local titleInvite = Instance.new("TextLabel", frameInvite)
+titleInvite.Size = UDim2.new(1,0,0,35)
+titleInvite.BackgroundTransparency = 1
+titleInvite.Text = "AUTO CONVIDAR"
+titleInvite.Font = Enum.Font.GothamBold
+titleInvite.TextScaled = true
+titleInvite.TextColor3 = Color3.new(1,1,1)
+
+local btnInvite = Instance.new("TextButton", frameInvite)
+btnInvite.Size = UDim2.new(0,180,0,45)
+btnInvite.Position = UDim2.new(0.5,-90,0,55)
+btnInvite.Text = "ATIVAR"
+btnInvite.BackgroundColor3 = Color3.fromRGB(40,40,40)
+btnInvite.TextColor3 = Color3.new(1,1,1)
+btnInvite.Font = Enum.Font.GothamBold
+btnInvite.TextScaled = true
+btnInvite.BorderSizePixel = 0
+
+Instance.new("UICorner", btnInvite).CornerRadius = UDim.new(0,12)
+addClickSound(btnInvite)
+
+local function StartParty()
+	StartFreeParty:FireServer("HouseParty", {houseOwnerUserId})
+end
+
+local function InviteAll()
+	local ids = {}
+
+	for _, plr in pairs(Players:GetPlayers()) do
+		table.insert(ids, plr.UserId)
+	end
+
+	PartyInviteMore:FireServer(ids)
+end
+
+task.spawn(function()
+	while true do
+		if autoInviteON then
+			pcall(function()
+				StartParty()
+				task.wait(2)
+				InviteAll()
+			end)
+		end
+		task.wait(8)
+	end
+end)
+
+btnInvite.MouseButton1Click:Connect(function()
+	autoInviteON = not autoInviteON
+
+	if autoInviteON then
+		btnInvite.Text = "DESATIVAR"
+		btnInvite.BackgroundColor3 = Color3.fromRGB(170,40,40)
+	else
+		btnInvite.Text = "ATIVAR"
+		btnInvite.BackgroundColor3 = Color3.fromRGB(40,40,40)
+	end
+end)
+--------------------------------------------------------------------
 -- RAINBOW HOUSE (ABA HOUSE)
 --------------------------------------------------------------------
 
